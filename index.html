@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8d7e6">
+  <meta name="description" content="Una felicitación de cumpleaños hecha con cariño para Laura.">
+  <title>Feliz cumpleaños, Laura</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #513544;
+      --rose: #d95888;
+      --rose-dark: #9f315d;
+      --paper: rgba(255, 255, 255, .78);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { min-height: 100%; }
+
+    body {
+      min-height: 100%;
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--ink);
+      font-family: Inter, ui-rounded, "Segoe UI", system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(255,255,255,.95) 0 4%, transparent 24%),
+        radial-gradient(circle at 90% 85%, rgba(222,109,150,.25), transparent 30%),
+        linear-gradient(145deg, #fff9fc 0%, #f8d7e6 48%, #f3bfd4 100%);
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      width: 220px;
+      height: 220px;
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    body::before { top: -95px; right: -80px; }
+    body::after { bottom: -120px; left: -70px; width: 280px; height: 280px; }
+
+    main {
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: max(28px, env(safe-area-inset-top)) 18px max(28px, env(safe-area-inset-bottom));
+    }
+
+    .card {
+      position: relative;
+      isolation: isolate;
+      width: min(100%, 460px);
+      padding: clamp(26px, 7vw, 42px) clamp(20px, 6vw, 36px);
+      overflow: hidden;
+      text-align: center;
+      background: var(--paper);
+      border: 1px solid rgba(255,255,255,.8);
+      border-radius: 32px;
+      box-shadow: 0 28px 80px rgba(105, 43, 70, .2);
+      backdrop-filter: blur(18px);
+      animation: appear .8s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.42), transparent 45%);
+    }
+
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--rose-dark);
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .emoji {
+      display: inline-grid;
+      width: 76px;
+      height: 76px;
+      place-items: center;
+      font-size: 50px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid white;
+      border-radius: 24px;
+      box-shadow: 0 12px 26px rgba(154,49,93,.13);
+      animation: float 2.8s ease-in-out infinite;
+    }
+
+    h1 {
+      margin: 22px 0 10px;
+      color: var(--rose-dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.45rem, 11vw, 4rem);
+      font-weight: 500;
+      line-height: .95;
+      letter-spacing: -.045em;
+    }
+
+    h1 span { display: block; font-style: italic; }
+
+    .subtitle {
+      max-width: 32ch;
+      margin: 0 auto 24px;
+      font-size: 1.02rem;
+      line-height: 1.55;
+      opacity: .82;
+    }
+
+    .photo {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      margin: 0 auto 22px;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(216,95,143,.12), rgba(255,255,255,.18)),
+        url("https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=1000&q=85") center/cover;
+      border: 6px solid rgba(255,255,255,.74);
+      border-radius: 24px;
+      box-shadow: 0 15px 35px rgba(105,43,70,.14);
+    }
+
+    .photo::after {
+      content: "Un día para celebrar ✦";
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      padding: 7px 10px;
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 700;
+      background: rgba(91,43,63,.55);
+      border-radius: 999px;
+      backdrop-filter: blur(8px);
+    }
+
+    .message {
+      margin: 0 0 24px;
+      padding: 20px;
+      text-align: left;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.03rem;
+      line-height: 1.7;
+      background: rgba(255,255,255,.56);
+      border: 1px solid rgba(255,255,255,.7);
+      border-radius: 22px;
+    }
+
+    .message p { margin: 0 0 14px; }
+    .message p:last-of-type { margin-bottom: 0; }
+
+    .signature {
+      margin-top: 18px;
+      color: var(--rose-dark);
+      font-family: Inter, ui-rounded, "Segoe UI", system-ui, sans-serif;
+      font-weight: 800;
+      text-align: right;
+    }
+
+    button {
+      min-height: 50px;
+      padding: 14px 23px;
+      color: #fff;
+      font: inherit;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--rose), var(--rose-dark));
+      border: 0;
+      border-radius: 999px;
+      box-shadow: 0 11px 25px rgba(159,49,93,.28);
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    button:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(159,49,93,.31); }
+    button:active { transform: translateY(0) scale(.98); }
+    button:focus-visible { outline: 3px solid rgba(159,49,93,.3); outline-offset: 4px; }
+
+    .secret {
+      display: grid;
+      grid-template-rows: 0fr;
+      margin: 0;
+      color: var(--rose-dark);
+      font-weight: 750;
+      line-height: 1.5;
+      opacity: 0;
+      transition: grid-template-rows .55s ease, opacity .45s ease, margin .55s ease;
+    }
+
+    .secret span { min-height: 0; overflow: hidden; }
+    .secret.show { grid-template-rows: 1fr; margin-top: 20px; opacity: 1; }
+
+    .confetti {
+      position: fixed;
+      z-index: 10;
+      top: -10vh;
+      pointer-events: none;
+      animation: fall 3s linear forwards;
+    }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(22px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-8px) rotate(3deg); }
+    }
+
+    @keyframes fall {
+      to { transform: translateY(120vh) rotate(720deg); opacity: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+
+    @media (max-width: 380px) {
+      .card { border-radius: 25px; }
+      .message { padding: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <article class="card">
+      <p class="eyebrow">5 de agosto · Para ti</p>
+      <div class="emoji" aria-hidden="true">🎂</div>
+      <h1>Feliz cumpleaños, <span>Laura</span></h1>
+      <p class="subtitle">Hoy quería regalarte algo pequeño, pero hecho especialmente para ti.</p>
+
+      <div class="photo" role="img" aria-label="Globos y confeti de celebración"></div>
+
+      <div class="message">
+        <p>Espero que este nuevo año te traiga muchísimos momentos buenos, nuevas aventuras y razones para sonreír. Gracias por estar ahí, por todas las conversaciones, las risas y los recuerdos que hemos compartido.</p>
+        <p>Ojalá hoy sea uno de esos días que recuerdes con cariño. Te mereces todo lo bueno que venga.</p>
+        <div class="signature">Con cariño, Rodrigo</div>
+      </div>
+
+      <button id="surprise" type="button" aria-controls="secret" aria-expanded="false">Abrir sorpresa ✨</button>
+      <p id="secret" class="secret" aria-live="polite"><span>Y recuerda: todavía nos quedan muchos buenos recuerdos por crear. 💖</span></p>
+    </article>
+  </main>
+
+  <script>
+    const button = document.querySelector('#surprise');
+    const secret = document.querySelector('#secret');
+    const symbols = ['✨', '🎉', '💖', '🎈', '⭐'];
+
+    button.addEventListener('click', () => {
+      const isOpen = secret.classList.toggle('show');
+      button.setAttribute('aria-expanded', String(isOpen));
+      button.textContent = isOpen ? '¡Feliz cumpleaños! 🎉' : 'Abrir sorpresa ✨';
+
+      if (!isOpen) return;
+      for (let i = 0; i < 30; i += 1) {
+        const piece = document.createElement('span');
+        piece.className = 'confetti';
+        piece.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        piece.style.left = `${Math.random() * 100}vw`;
+        piece.style.animationDelay = `${Math.random() * .75}s`;
+        piece.style.fontSize = `${16 + Math.random() * 18}px`;
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 3900);
+      }
+    });
+  </script>
+</body>
+</html>
