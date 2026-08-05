@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f8d7e6" />
+  <title>Feliz cumpleaños</title>
+  <style>
+    :root {
+      --bg1: #fff7fb;
+      --bg2: #f8d7e6;
+      --card: rgba(255,255,255,.82);
+      --text: #4f3342;
+      --accent: #d85f8f;
+      --accent-dark: #a93c69;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #ffffff 0, transparent 35%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+    }
+
+    body {
+      overflow-x: hidden;
+      padding: env(safe-area-inset-top) 18px env(safe-area-inset-bottom);
+    }
+
+    .page {
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 28px 0;
+      position: relative;
+    }
+
+    .card {
+      width: min(100%, 420px);
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,.75);
+      border-radius: 28px;
+      padding: 28px 22px;
+      box-shadow: 0 20px 60px rgba(103, 45, 70, .18);
+      text-align: center;
+      animation: appear .9s ease both;
+    }
+
+    .emoji {
+      font-size: 58px;
+      line-height: 1;
+      animation: float 2.8s ease-in-out infinite;
+    }
+
+    h1 {
+      margin: 18px 0 8px;
+      font-size: clamp(2rem, 9vw, 3.2rem);
+      line-height: 1;
+      color: var(--accent-dark);
+    }
+
+    .subtitle {
+      margin: 0 auto 22px;
+      max-width: 28ch;
+      font-size: 1.05rem;
+      opacity: .84;
+    }
+
+    .photo {
+      margin: 22px auto;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 22px;
+      background:
+        linear-gradient(135deg, rgba(216,95,143,.18), rgba(255,255,255,.65)),
+        url("https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=900&q=80")
+        center/cover;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.7);
+    }
+
+    .message {
+      text-align: left;
+      line-height: 1.72;
+      font-size: 1.03rem;
+      background: rgba(255,255,255,.62);
+      border-radius: 20px;
+      padding: 18px;
+      margin: 18px 0 22px;
+    }
+
+    .signature {
+      text-align: right;
+      font-weight: 700;
+      color: var(--accent-dark);
+      margin-top: 14px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: white;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 14px 22px;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(169, 60, 105, .25);
+      transition: transform .15s ease;
+    }
+
+    button:active { transform: scale(.97); }
+
+    .hidden-message {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height .6s ease, opacity .6s ease, margin .6s ease;
+      margin: 0;
+      font-weight: 700;
+      color: var(--accent-dark);
+    }
+
+    .hidden-message.show {
+      max-height: 120px;
+      opacity: 1;
+      margin: 20px 0 0;
+    }
+
+    .sparkle {
+      position: fixed;
+      pointer-events: none;
+      font-size: 22px;
+      animation: fall 2.8s linear forwards;
+      z-index: 10;
+    }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(18px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-8px) rotate(3deg); }
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-10vh) rotate(0); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="card">
+      <div class="emoji">🎂</div>
+
+      <h1>Feliz cumpleaños, Laura</h1>
+      <p class="subtitle">Hoy quería regalarte algo pequeño, pero hecho especialmente para ti.</p>
+
+      <div class="photo" aria-label="Foto de celebración"></div>
+
+      <div class="message">
+        Espero que este nuevo año te traiga muchísimos momentos buenos, nuevas aventuras
+        y razones para sonreír. Gracias por estar ahí, por todas las conversaciones,
+        las risas y los recuerdos que hemos compartido.
+
+        <br><br>
+
+        Ojalá hoy sea uno de esos días que recuerdes con cariño.
+        Te mereces todo lo bueno que venga.
+
+        <div class="signature">Con cariño, Rodrigo</div>
+      </div>
+
+      <button id="surpriseBtn">Abrir sorpresa ✨</button>
+      <p id="secret" class="hidden-message">
+        Y recuerda: todavía nos quedan muchos buenos recuerdos por crear.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const button = document.getElementById("surpriseBtn");
+    const secret = document.getElementById("secret");
+    const symbols = ["✨", "🎉", "💖", "🎈", "⭐"];
+
+    button.addEventListener("click", () => {
+      secret.classList.add("show");
+      button.textContent = "¡Feliz cumpleaños! 🎉";
+
+      for (let i = 0; i < 28; i++) {
+        const el = document.createElement("span");
+        el.className = "sparkle";
+        el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        el.style.left = Math.random() * 100 + "vw";
+        el.style.animationDelay = Math.random() * .8 + "s";
+        el.style.fontSize = 16 + Math.random() * 20 + "px";
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 3600);
+      }
+    });
+  </script>
+</body>
+</html>
