@@ -716,6 +716,13 @@
 
     .plan-result.reveal { animation: messageIn .6s ease both; }
 
+    .spin-button.used {
+      color: var(--rose-dark);
+      background: rgba(255,255,255,.72);
+      box-shadow: none;
+      cursor: default;
+    }
+
     .wheel-lock {
       position: absolute;
       z-index: 6;
@@ -733,6 +740,38 @@
     }
 
     .plan-wheel-section.unlocked .wheel-lock { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .questions-chapter {
+      display: none;
+      margin-top: 34px;
+      padding: 30px 20px;
+      color: var(--rose-dark);
+      background:
+        radial-gradient(circle at 85% 15%, rgba(255,255,255,.85), transparent 28%),
+        rgba(255,229,239,.72);
+      border: 1px solid rgba(255,255,255,.8);
+      border-radius: 24px;
+    }
+
+    .questions-chapter.show { display: block; animation: messageIn .7s ease both; }
+
+    .questions-chapter .chapter-number {
+      display: inline-block;
+      margin-bottom: 10px;
+      font-size: .7rem;
+      font-weight: 900;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .questions-chapter h2 {
+      margin: 0 0 10px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.8rem;
+      font-weight: 500;
+    }
+
+    .questions-chapter p { margin: 0; line-height: 1.55; }
 
     .confetti {
       position: fixed;
@@ -861,7 +900,7 @@
           <span class="wheel-pointer" aria-hidden="true"></span>
           <div id="planWheel" class="plan-wheel" aria-label="Ruleta de planes">
             <span class="wheel-label" style="--angle:18deg">Cena elegida por ti</span>
-            <span class="wheel-label" style="--angle:54deg">Escapada sorpresa</span>
+            <span class="wheel-label" style="--angle:54deg">Cita de lectura</span>
             <span class="wheel-label" style="--angle:90deg">Restaurante nuevo</span>
             <span class="wheel-label" style="--angle:126deg">Paseo y helado</span>
             <span class="wheel-label" style="--angle:162deg">Día sin móviles</span>
@@ -874,6 +913,12 @@
         </div>
         <button id="spinWheel" class="spin-button" type="button">Girar la ruleta ✨</button>
         <div id="planResult" class="plan-result" aria-live="polite">El próximo plan todavía es un misterio…</div>
+      </section>
+
+      <section id="questionsChapter" class="questions-chapter" aria-labelledby="questionsTitle">
+        <span class="chapter-number">Siguiente capítulo</span>
+        <h2 id="questionsTitle">Ahora vienen las preguntas…</h2>
+        <p>Prepárate para demostrar cuánto recuerdas de nosotros 💭</p>
       </section>
     </article>
   </main>
@@ -891,6 +936,7 @@
     const planWheel = document.querySelector('#planWheel');
     const spinWheel = document.querySelector('#spinWheel');
     const planResult = document.querySelector('#planResult');
+    const questionsChapter = document.querySelector('#questionsChapter');
     const symbols = ['✨', '🎉', '💖', '🎈', '⭐'];
 
     const pigPairs = [
@@ -906,7 +952,7 @@
 
     const plans = [
       { label: 'Una cena elegida por ti.', weight: 4 },
-      { label: 'Escapada sorpresa.', weight: 1 },
+      { label: 'Cita de lectura.', weight: 1 },
       { label: 'Probar un restaurante nuevo.', weight: 4 },
       { label: 'Paseo y helado.', weight: 4 },
       { label: 'Día sin móviles.', weight: 1 },
@@ -922,6 +968,7 @@
     let boardLocked = false;
     let wheelRotation = 0;
     let wheelSpinning = false;
+    let wheelUsed = false;
 
     const shuffledCards = pigPairs
       .flatMap((pair, pairIndex) => [
@@ -1019,8 +1066,9 @@
     });
 
     spinWheel.addEventListener('click', () => {
-      if (wheelSpinning || !planWheelSection.classList.contains('unlocked')) return;
+      if (wheelSpinning || wheelUsed || !planWheelSection.classList.contains('unlocked')) return;
       wheelSpinning = true;
+      wheelUsed = true;
       spinWheel.disabled = true;
       planResult.textContent = 'Girando…';
       planResult.classList.remove('reveal');
@@ -1048,8 +1096,11 @@
       setTimeout(() => {
         planResult.textContent = `Nuestro próximo plan: ${selected.label}`;
         planResult.classList.add('reveal');
-        spinWheel.disabled = false;
+        spinWheel.textContent = 'Plan elegido ✓';
+        spinWheel.classList.add('used');
         wheelSpinning = false;
+        questionsChapter.classList.add('show');
+        setTimeout(() => questionsChapter.scrollIntoView({ behavior: 'smooth', block: 'center' }), 700);
       }, 4700);
     });
   </script>
