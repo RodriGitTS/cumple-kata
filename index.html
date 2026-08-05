@@ -1218,14 +1218,14 @@
       </section>
 
       <section id="secondGallerySection" class="second-gallery-section" aria-labelledby="secondGalleryTitle">
-        <h2 id="secondGalleryTitle" class="gallery-title">Otros cuatro momentos que no podían faltar ♡</h2>
+        <h2 id="secondGalleryTitle" class="gallery-title">Unos pocos recuerdos más ♡</h2>
         <p class="second-gallery-intro">Toca cada foto para descubrir lo que guarda.</p>
         <div class="gallery" aria-label="Segunda galería de recuerdos">
           <figure class="polaroid">
             <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto cuidándome">
               <span class="memory-inner">
                 <span class="memory-front"><img src="recuerdo-cuidandome.jpg" alt="Cuidándome con mucha concentración" loading="lazy"></span>
-                <span class="memory-back"><span>Incluso en los momentos pequeños, siempre encuentras una forma de cuidarme.</span></span>
+                <span class="memory-back"><span>Me gusta cuando me cuidas, esa vez me hizo sentir querido.</span></span>
               </span>
             </button>
           </figure>
@@ -1233,7 +1233,7 @@
             <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto conduciendo">
               <span class="memory-inner">
                 <span class="memory-front"><img src="recuerdo-conduciendo.jpg" alt="Conduciendo durante una aventura juntos" loading="lazy"></span>
-                <span class="memory-back"><span>Mi conductora favorita para todas las aventuras que todavía nos quedan.</span></span>
+                <span class="memory-back"><span>Esta vez, en cambio, me hizo sentir miedo jajaj.</span></span>
               </span>
             </button>
           </figure>
@@ -1241,7 +1241,7 @@
             <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto comiendo una hamburguesa en Budapest">
               <span class="memory-inner">
                 <span class="memory-front"><img src="recuerdo-hamburguesa.jpg" alt="Comiendo una hamburguesa en Budapest" loading="lazy"></span>
-                <span class="memory-back"><span>Budapest, una hamburguesa y esa cara: un recuerdo imposible de superar.</span></span>
+                <span class="memory-back"><span>Qué buenas estaban esas hamburguesas, para tirarlas.</span></span>
               </span>
             </button>
           </figure>
@@ -1249,7 +1249,7 @@
             <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto de la princesa delante del castillo">
               <span class="memory-inner">
                 <span class="memory-front"><img src="recuerdo-princesa.jpg" alt="Mi princesa delante de un castillo" loading="lazy"></span>
-                <span class="memory-back"><span>La princesa delante de su castillo, como tenía que ser.</span></span>
+                <span class="memory-back"><span>La princesa en su hábitat.</span></span>
               </span>
             </button>
           </figure>
@@ -1635,6 +1635,7 @@
     const prepareScratchCard = (card) => {
       const canvas = card.querySelector('.scratch-canvas');
       const context = canvas.getContext('2d');
+      const coverLabel = card.querySelector('.scratch-label').textContent;
       const visited = new Set();
       let scratching = false;
 
@@ -1652,10 +1653,13 @@
         context.fillStyle = gradient;
         context.fillRect(0, 0, rect.width, rect.height);
         context.fillStyle = 'rgba(255,255,255,.94)';
-        context.font = '800 15px system-ui, sans-serif';
         context.textAlign = 'center';
         context.textBaseline = 'middle';
-        context.fillText('RASCA AQUÍ ✨', rect.width / 2, rect.height / 2);
+        context.font = '800 15px system-ui, sans-serif';
+        context.fillText(coverLabel, rect.width / 2, rect.height / 2 - 9, rect.width - 28);
+        context.fillStyle = 'rgba(255,255,255,.78)';
+        context.font = '700 9px system-ui, sans-serif';
+        context.fillText('RASCA AQUÍ ✨', rect.width / 2, rect.height / 2 + 20);
       };
 
       const scratch = (event) => {
