@@ -928,6 +928,132 @@
 
     .scratch-complete.show { display: block; animation: messageIn .6s ease both; }
 
+    .doors-section {
+      display: none;
+      margin-top: 36px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(159,49,93,.13);
+    }
+
+    .doors-section.show { display: block; animation: messageIn .75s ease both; }
+
+    .doors-section h2 {
+      margin: 0 0 8px;
+      color: var(--rose-dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.75rem, 8vw, 2.35rem);
+      font-weight: 500;
+    }
+
+    .doors-intro {
+      max-width: 34ch;
+      margin: 0 auto 22px;
+      font-size: .9rem;
+      line-height: 1.5;
+      opacity: .74;
+    }
+
+    .doors-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      perspective: 900px;
+    }
+
+    .door-choice {
+      position: relative;
+      width: 100%;
+      aspect-ratio: .62;
+      min-height: 0;
+      padding: 0;
+      color: var(--rose-dark);
+      background: #fdebf2;
+      border: 5px solid rgba(255,255,255,.86);
+      border-radius: 7px 7px 3px 3px;
+      box-shadow: 0 13px 25px rgba(89,37,59,.17);
+      overflow: hidden;
+      transform-style: preserve-3d;
+    }
+
+    .door-choice:hover { transform: translateY(-3px); box-shadow: 0 16px 28px rgba(89,37,59,.2); }
+
+    .door-panel {
+      position: absolute;
+      z-index: 2;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background:
+        linear-gradient(90deg, transparent 8%, rgba(255,255,255,.08) 9% 11%, transparent 12%),
+        linear-gradient(145deg, #d86594, #9c315d);
+      transform-origin: left;
+      transition: transform 1s cubic-bezier(.2,.75,.2,1), filter .4s ease;
+      backface-visibility: hidden;
+    }
+
+    .door-panel::before,
+    .door-panel::after {
+      content: "";
+      position: absolute;
+      right: 18%;
+      left: 18%;
+      height: 27%;
+      border: 2px solid rgba(255,255,255,.32);
+      border-radius: 4px;
+    }
+
+    .door-panel::before { top: 13%; }
+    .door-panel::after { bottom: 13%; }
+
+    .door-number { font-family: Georgia, "Times New Roman", serif; font-size: 2rem; }
+
+    .door-knob {
+      position: absolute;
+      z-index: 3;
+      top: 52%;
+      right: 10%;
+      width: 11px;
+      height: 11px;
+      background: #ffd97c;
+      border: 2px solid #fff0bd;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(65,28,42,.3);
+    }
+
+    .door-prize {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 10px;
+      color: var(--rose-dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(.68rem, 2.8vw, .9rem);
+      font-style: italic;
+      line-height: 1.25;
+      background: linear-gradient(145deg, #fffafd, #f8d8e5);
+    }
+
+    .door-choice.open .door-panel { transform: rotateY(-105deg); }
+    .door-choice.not-chosen { opacity: .42; filter: grayscale(.35); cursor: not-allowed; }
+    .door-choice.not-chosen .door-panel { filter: brightness(.82); }
+
+    .door-result {
+      display: none;
+      margin: 20px 0 0;
+      padding: 17px;
+      color: var(--rose-dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      line-height: 1.45;
+      background: rgba(255,255,255,.62);
+      border-radius: 18px;
+    }
+
+    .door-result.show { display: block; animation: messageIn .6s ease both; }
+
     .confetti {
       position: fixed;
       z-index: 10;
@@ -1117,6 +1243,26 @@
         </div>
         <p id="scratchComplete" class="scratch-complete" aria-live="polite">Tres secretos descubiertos. Y todavía quedan más capítulos por abrir ✨</p>
       </section>
+
+      <section id="doorsSection" class="doors-section" aria-labelledby="doorsTitle">
+        <h2 id="doorsTitle">Elige una puerta</h2>
+        <p class="doors-intro">Detrás de cada puerta hay un premio, pero solo puedes abrir una. Elige con cuidado…</p>
+        <div class="doors-grid">
+          <button class="door-choice" type="button" data-prize="Masaje con aceite estilo spa" aria-label="Abrir la puerta 1">
+            <span class="door-prize">Masaje con aceite estilo spa 🧴</span>
+            <span class="door-panel"><span class="door-number">1</span><span class="door-knob"></span></span>
+          </button>
+          <button class="door-choice" type="button" data-prize="Masaje de pies y sesión de mimos" aria-label="Abrir la puerta 2">
+            <span class="door-prize">Masaje de pies y sesión de mimos 🦶</span>
+            <span class="door-panel"><span class="door-number">2</span><span class="door-knob"></span></span>
+          </button>
+          <button class="door-choice" type="button" data-prize="Sesión de fotos y recuerdo impreso" aria-label="Abrir la puerta 3">
+            <span class="door-prize">Sesión de fotos y recuerdo impreso 📸</span>
+            <span class="door-panel"><span class="door-number">3</span><span class="door-knob"></span></span>
+          </button>
+        </div>
+        <p id="doorResult" class="door-result" aria-live="polite"></p>
+      </section>
     </article>
   </main>
 
@@ -1146,6 +1292,9 @@
     const scratchSection = document.querySelector('#scratchSection');
     const scratchCards = [...document.querySelectorAll('.scratch-card')];
     const scratchComplete = document.querySelector('#scratchComplete');
+    const doorsSection = document.querySelector('#doorsSection');
+    const doorChoices = [...document.querySelectorAll('.door-choice')];
+    const doorResult = document.querySelector('#doorResult');
     const symbols = ['✨', '🎉', '💖', '🎈', '⭐'];
 
     const pigPairs = [
@@ -1220,6 +1369,7 @@
     let quizPoints = 0;
     let questionAnswered = false;
     let revealedScratchCards = 0;
+    let chosenDoor = false;
 
     const shuffledCards = pigPairs
       .flatMap((pair, pairIndex) => [
@@ -1463,7 +1613,9 @@
           revealedScratchCards += 1;
           if (revealedScratchCards === scratchCards.length) {
             scratchComplete.classList.add('show');
+            doorsSection.classList.add('show');
             burstConfetti();
+            setTimeout(() => doorsSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 800);
           }
         }
       };
@@ -1478,6 +1630,24 @@
       canvas.addEventListener('pointercancel', () => { scratching = false; });
       paintCover();
     };
+
+    doorChoices.forEach((door) => {
+      door.addEventListener('click', () => {
+        if (chosenDoor) return;
+        chosenDoor = true;
+        door.classList.add('open');
+        door.setAttribute('aria-expanded', 'true');
+        doorChoices.forEach((otherDoor) => {
+          otherDoor.disabled = true;
+          if (otherDoor !== door) otherDoor.classList.add('not-chosen');
+        });
+        setTimeout(() => {
+          doorResult.textContent = `Has elegido: ${door.dataset.prize}. Premio guardado para cuando quieras canjearlo ✨`;
+          doorResult.classList.add('show');
+          burstConfetti();
+        }, 850);
+      });
+    });
 
   </script>
 </body>
