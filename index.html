@@ -841,6 +841,93 @@
     .quiz-finish.show { display: block; animation: messageIn .6s ease both; }
     .quiz-finish .score { display: block; margin: 8px 0; font-family: Georgia, "Times New Roman", serif; font-size: 2.4rem; }
 
+    .scratch-section {
+      display: none;
+      margin-top: 34px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(159,49,93,.13);
+    }
+
+    .scratch-section.show { display: block; animation: messageIn .75s ease both; }
+
+    .scratch-section h2 {
+      margin: 0 0 8px;
+      color: var(--rose-dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.7rem, 7vw, 2.25rem);
+      font-weight: 500;
+    }
+
+    .scratch-intro {
+      max-width: 34ch;
+      margin: 0 auto 20px;
+      font-size: .9rem;
+      line-height: 1.5;
+      opacity: .72;
+    }
+
+    .scratch-list { display: grid; gap: 14px; }
+
+    .scratch-card {
+      position: relative;
+      min-height: 155px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 90% 10%, rgba(255,255,255,.85), transparent 30%),
+        linear-gradient(145deg, #fff7fb, #f8d1e1);
+      border: 1px solid rgba(255,255,255,.9);
+      border-radius: 20px;
+      box-shadow: 0 11px 24px rgba(92,39,61,.14);
+    }
+
+    .scratch-content {
+      min-height: 155px;
+      display: grid;
+      align-content: center;
+      gap: 9px;
+      padding: 24px 22px;
+    }
+
+    .scratch-label {
+      color: var(--rose-dark);
+      font-size: .68rem;
+      font-weight: 900;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .scratch-message {
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.22rem;
+      font-style: italic;
+      line-height: 1.35;
+    }
+
+    .scratch-canvas {
+      position: absolute;
+      z-index: 2;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      cursor: crosshair;
+      transition: opacity .5s ease;
+    }
+
+    .scratch-card.revealed .scratch-canvas { opacity: 0; pointer-events: none; }
+    .scratch-card.revealed { animation: matchPop .55s ease both; }
+
+    .scratch-complete {
+      display: none;
+      margin: 18px 0 0;
+      color: var(--rose-dark);
+      font-weight: 850;
+      line-height: 1.5;
+    }
+
+    .scratch-complete.show { display: block; animation: messageIn .6s ease both; }
+
     .confetti {
       position: fixed;
       z-index: 10;
@@ -1001,6 +1088,35 @@
           <p id="quizFinalMessage">Has llegado hasta el final del interrogatorio 🎉</p>
         </div>
       </section>
+
+      <section id="scratchSection" class="scratch-section" aria-labelledby="scratchTitle">
+        <h2 id="scratchTitle">Rasca y descubre</h2>
+        <p class="scratch-intro">Hay tres cosas escondidas. Rasca cada tarjeta con el dedo para descubrirlas.</p>
+        <div class="scratch-list">
+          <article class="scratch-card">
+            <div class="scratch-content">
+              <span class="scratch-label">Algo que me encanta de ti</span>
+              <span class="scratch-message">La forma en la que sientes el mundo.</span>
+            </div>
+            <canvas class="scratch-canvas" aria-label="Rasca para descubrir algo que me encanta de ti"></canvas>
+          </article>
+          <article class="scratch-card">
+            <div class="scratch-content">
+              <span class="scratch-label">Algo que prometo hacer contigo</span>
+              <span class="scratch-message">Un viaje a la playa los dos.</span>
+            </div>
+            <canvas class="scratch-canvas" aria-label="Rasca para descubrir algo que prometo hacer contigo"></canvas>
+          </article>
+          <article class="scratch-card">
+            <div class="scratch-content">
+              <span class="scratch-label">Algo que espero vivir a tu lado</span>
+              <span class="scratch-message">Que crezcamos juntos 🦀</span>
+            </div>
+            <canvas class="scratch-canvas" aria-label="Rasca para descubrir algo que espero vivir a tu lado"></canvas>
+          </article>
+        </div>
+        <p id="scratchComplete" class="scratch-complete" aria-live="polite">Tres secretos descubiertos. Y todavía quedan más capítulos por abrir ✨</p>
+      </section>
     </article>
   </main>
 
@@ -1027,6 +1143,9 @@
     const quizNext = document.querySelector('#quizNext');
     const quizFinish = document.querySelector('#quizFinish');
     const quizScore = document.querySelector('#quizScore');
+    const scratchSection = document.querySelector('#scratchSection');
+    const scratchCards = [...document.querySelectorAll('.scratch-card')];
+    const scratchComplete = document.querySelector('#scratchComplete');
     const symbols = ['✨', '🎉', '💖', '🎈', '⭐'];
 
     const pigPairs = [
@@ -1100,6 +1219,7 @@
     let currentQuestion = 0;
     let quizPoints = 0;
     let questionAnswered = false;
+    let revealedScratchCards = 0;
 
     const shuffledCards = pigPairs
       .flatMap((pair, pairIndex) => [
@@ -1292,10 +1412,73 @@
       quizGame.style.display = 'none';
       quizScore.textContent = `${quizPoints} / ${quizQuestions.length}`;
       quizFinish.classList.add('show');
+      scratchSection.classList.add('show');
+      scratchCards.forEach(prepareScratchCard);
       burstConfetti();
+      setTimeout(() => scratchSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 800);
     });
 
     renderQuestion();
+
+    const prepareScratchCard = (card) => {
+      const canvas = card.querySelector('.scratch-canvas');
+      const context = canvas.getContext('2d');
+      const visited = new Set();
+      let scratching = false;
+
+      const paintCover = () => {
+        const rect = canvas.getBoundingClientRect();
+        const scale = window.devicePixelRatio || 1;
+        canvas.width = Math.round(rect.width * scale);
+        canvas.height = Math.round(rect.height * scale);
+        context.setTransform(scale, 0, 0, scale, 0, 0);
+        const gradient = context.createLinearGradient(0, 0, rect.width, rect.height);
+        gradient.addColorStop(0, '#d85f8f');
+        gradient.addColorStop(.55, '#b64072');
+        gradient.addColorStop(1, '#8f2d57');
+        context.globalCompositeOperation = 'source-over';
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, rect.width, rect.height);
+        context.fillStyle = 'rgba(255,255,255,.94)';
+        context.font = '800 15px system-ui, sans-serif';
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillText('RASCA AQUÍ ✨', rect.width / 2, rect.height / 2);
+      };
+
+      const scratch = (event) => {
+        if (!scratching || card.classList.contains('revealed')) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        context.globalCompositeOperation = 'destination-out';
+        context.beginPath();
+        context.arc(x, y, 22, 0, Math.PI * 2);
+        context.fill();
+        visited.add(`${Math.floor(x / 24)}:${Math.floor(y / 24)}`);
+
+        if (visited.size >= 24) {
+          card.classList.add('revealed');
+          canvas.setAttribute('aria-hidden', 'true');
+          revealedScratchCards += 1;
+          if (revealedScratchCards === scratchCards.length) {
+            scratchComplete.classList.add('show');
+            burstConfetti();
+          }
+        }
+      };
+
+      canvas.addEventListener('pointerdown', (event) => {
+        scratching = true;
+        canvas.setPointerCapture(event.pointerId);
+        scratch(event);
+      });
+      canvas.addEventListener('pointermove', scratch);
+      canvas.addEventListener('pointerup', () => { scratching = false; });
+      canvas.addEventListener('pointercancel', () => { scratching = false; });
+      paintCover();
+    };
+
   </script>
 </body>
 </html>
