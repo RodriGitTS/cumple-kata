@@ -459,19 +459,143 @@
     button:active { transform: translateY(0) scale(.98); }
     button:focus-visible { outline: 3px solid rgba(159,49,93,.3); outline-offset: 4px; }
 
-    .secret {
-      display: grid;
-      grid-template-rows: 0fr;
-      margin: 0;
-      color: var(--rose-dark);
-      font-weight: 750;
-      line-height: 1.5;
-      opacity: 0;
-      transition: grid-template-rows .55s ease, opacity .45s ease, margin .55s ease;
+    .pig-game {
+      margin-top: 30px;
+      padding-top: 28px;
+      border-top: 1px solid rgba(159,49,93,.13);
     }
 
-    .secret span { min-height: 0; overflow: hidden; }
-    .secret.show { grid-template-rows: 1fr; margin-top: 20px; opacity: 1; }
+    .pig-game h2 {
+      margin: 0 auto 8px;
+      color: var(--rose-dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.55rem, 7vw, 2.1rem);
+      font-weight: 500;
+      line-height: 1.08;
+    }
+
+    .game-intro {
+      max-width: 34ch;
+      margin: 0 auto 20px;
+      font-size: .9rem;
+      line-height: 1.5;
+      opacity: .72;
+    }
+
+    .pig-board {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0 0 18px;
+    }
+
+    .pig-card {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      min-height: 0;
+      padding: 0;
+      color: var(--rose-dark);
+      background: transparent;
+      border: 0;
+      border-radius: 14px;
+      box-shadow: none;
+      perspective: 700px;
+    }
+
+    .pig-card:hover,
+    .pig-card:active { transform: none; box-shadow: none; }
+
+    .pig-card-inner {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      transition: transform .45s cubic-bezier(.2,.75,.2,1);
+    }
+
+    .pig-card.is-open .pig-card-inner,
+    .pig-card.is-matched .pig-card-inner { transform: rotateY(180deg); }
+
+    .pig-face {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .pig-front {
+      color: #fff;
+      font-size: 1.25rem;
+      background: linear-gradient(145deg, #e984ad, #b84072);
+      border: 2px solid rgba(255,255,255,.7);
+      box-shadow: 0 7px 15px rgba(125,45,78,.18);
+    }
+
+    .pig-front::after { content: "?"; font-weight: 900; }
+
+    .pig-back {
+      font-size: clamp(1.45rem, 7vw, 2.15rem);
+      background: #fff6fa;
+      border: 2px solid #f3b3cd;
+      transform: rotateY(180deg);
+      box-shadow: 0 7px 15px rgba(125,45,78,.12);
+    }
+
+    .pig-card.is-matched .pig-back {
+      background: #ffe0ed;
+      border-color: var(--rose);
+      animation: matchPop .45s ease both;
+    }
+
+    .chain {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 3px 0 17px;
+    }
+
+    .chain-link {
+      width: 16px;
+      height: 16px;
+      background: rgba(216,88,136,.15);
+      border: 2px solid rgba(159,49,93,.24);
+      border-radius: 50%;
+      transition: background .3s ease, transform .3s ease;
+    }
+
+    .chain-link + .chain-link { margin-left: -3px; }
+    .chain-link.done { background: var(--rose); border-color: var(--rose-dark); transform: scale(1.12); }
+
+    .game-message {
+      min-height: 78px;
+      display: grid;
+      place-items: center;
+      padding: 15px 17px;
+      color: var(--rose-dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.05rem;
+      font-style: italic;
+      line-height: 1.45;
+      background: rgba(255,255,255,.58);
+      border: 1px solid rgba(255,255,255,.8);
+      border-radius: 18px;
+      transition: transform .25s ease, opacity .25s ease;
+    }
+
+    .game-message.reveal { animation: messageIn .55s cubic-bezier(.2,.8,.2,1) both; }
+
+    .game-complete {
+      display: none;
+      margin: 16px 0 0;
+      color: var(--rose-dark);
+      font-weight: 850;
+      line-height: 1.5;
+    }
+
+    .game-complete.show { display: block; animation: messageIn .6s ease both; }
 
     .confetti {
       position: fixed;
@@ -493,6 +617,15 @@
 
     @keyframes fall {
       to { transform: translateY(120vh) rotate(720deg); opacity: 0; }
+    }
+
+    @keyframes matchPop {
+      50% { transform: rotateY(180deg) scale(1.1); }
+    }
+
+    @keyframes messageIn {
+      from { opacity: 0; transform: translateY(8px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -571,18 +704,63 @@
         <p>Gracias por estar ahí, por todas las conversaciones, las risas y los recuerdos que hemos compartido.</p>
       </div>
 
-      <button id="surprise" type="button" aria-controls="secret" aria-expanded="false">Abrir sorpresa ✨</button>
-      <p id="secret" class="secret" aria-live="polite"><span>Y recuerda: todavía nos quedan muchos buenos recuerdos por crear. 💖</span></p>
+      <section class="pig-game" aria-labelledby="pigGameTitle">
+        <h2 id="pigGameTitle">Para descubrir cosas que me gustan de ti une los cerditos</h2>
+        <p class="game-intro">Encuentra las ocho parejas. Cada unión completa un eslabón y descubre una cosa nueva.</p>
+        <div id="pigBoard" class="pig-board" aria-label="Juego de parejas de cerditos"></div>
+        <div id="chain" class="chain" aria-label="Cadena: 0 de 8 uniones completadas">
+          <span class="chain-link"></span><span class="chain-link"></span><span class="chain-link"></span><span class="chain-link"></span>
+          <span class="chain-link"></span><span class="chain-link"></span><span class="chain-link"></span><span class="chain-link"></span>
+        </div>
+        <div id="gameMessage" class="game-message" aria-live="polite">Toca dos cartas y encuentra una pareja 🐷</div>
+        <p id="gameComplete" class="game-complete" aria-live="polite">¡Cadena completa! Y todavía me quedan muchas más cosas por descubrir de ti 💖</p>
+      </section>
     </article>
   </main>
 
   <script>
-    const button = document.querySelector('#surprise');
-    const secret = document.querySelector('#secret');
     const welcome = document.querySelector('#welcome');
     const openEnvelope = document.querySelector('#openEnvelope');
     const memoryCards = document.querySelectorAll('.memory-card');
+    const pigBoard = document.querySelector('#pigBoard');
+    const gameMessage = document.querySelector('#gameMessage');
+    const gameComplete = document.querySelector('#gameComplete');
+    const chain = document.querySelector('#chain');
+    const chainLinks = [...document.querySelectorAll('.chain-link')];
     const symbols = ['✨', '🎉', '💖', '🎈', '⭐'];
+
+    const pigPairs = [
+      { icon: '🐷', message: 'Me gusta tu humor y cómo me haces reír.' },
+      { icon: '🐽', message: 'Me gusta tu sonrisa.' },
+      { icon: '🐖', message: 'Me gusta tu mirada despistada.' },
+      { icon: '🐷☀️', message: 'Me gustan tus ojos al sol.' },
+      { icon: '🐷🍑', message: 'Me gusta tu 🍑.' },
+      { icon: '🐷💌', message: 'Me gusta cuando me dices que me quieres.' },
+      { icon: '🐷🎵', message: 'Me gustan tus gustos musicales.' },
+      { icon: '🐷🗺️', message: 'Me gustan los planes que hago junto a ti.' }
+    ];
+
+    let openCards = [];
+    let matchedPairs = 0;
+    let boardLocked = false;
+
+    const shuffledCards = pigPairs
+      .flatMap((pair, pairIndex) => [
+        { ...pair, pairIndex, copy: 1 },
+        { ...pair, pairIndex, copy: 2 }
+      ])
+      .sort(() => Math.random() - .5);
+
+    shuffledCards.forEach((pig, index) => {
+      const card = document.createElement('button');
+      card.className = 'pig-card';
+      card.type = 'button';
+      card.dataset.pair = pig.pairIndex;
+      card.setAttribute('aria-label', `Carta ${index + 1}, boca abajo`);
+      card.setAttribute('aria-pressed', 'false');
+      card.innerHTML = `<span class="pig-card-inner"><span class="pig-face pig-front"></span><span class="pig-face pig-back" aria-hidden="true">${pig.icon}</span></span>`;
+      pigBoard.appendChild(card);
+    });
 
     openEnvelope.addEventListener('click', () => {
       welcome.classList.add('is-open');
@@ -597,13 +775,8 @@
       });
     });
 
-    button.addEventListener('click', () => {
-      const isOpen = secret.classList.toggle('show');
-      button.setAttribute('aria-expanded', String(isOpen));
-      button.textContent = isOpen ? '¡Feliz cumpleaños! 🎉' : 'Abrir sorpresa ✨';
-
-      if (!isOpen) return;
-      for (let i = 0; i < 30; i += 1) {
+    const burstConfetti = () => {
+      for (let i = 0; i < 34; i += 1) {
         const piece = document.createElement('span');
         piece.className = 'confetti';
         piece.textContent = symbols[Math.floor(Math.random() * symbols.length)];
@@ -612,6 +785,56 @@
         piece.style.fontSize = `${16 + Math.random() * 18}px`;
         document.body.appendChild(piece);
         setTimeout(() => piece.remove(), 3900);
+      }
+    };
+
+    pigBoard.addEventListener('click', (event) => {
+      const card = event.target.closest('.pig-card');
+      if (!card || boardLocked || card.classList.contains('is-open') || card.classList.contains('is-matched')) return;
+
+      card.classList.add('is-open');
+      card.setAttribute('aria-pressed', 'true');
+      card.setAttribute('aria-label', `Cerdito ${card.querySelector('.pig-back').textContent}, boca arriba`);
+      openCards.push(card);
+
+      if (openCards.length < 2) return;
+      boardLocked = true;
+      const [first, second] = openCards;
+      const isMatch = first.dataset.pair === second.dataset.pair;
+
+      if (isMatch) {
+        const pair = pigPairs[Number(first.dataset.pair)];
+        setTimeout(() => {
+          first.classList.add('is-matched');
+          second.classList.add('is-matched');
+          first.disabled = true;
+          second.disabled = true;
+          matchedPairs += 1;
+          chainLinks[matchedPairs - 1].classList.add('done');
+          chain.setAttribute('aria-label', `Cadena: ${matchedPairs} de 8 uniones completadas`);
+          gameMessage.classList.remove('reveal');
+          void gameMessage.offsetWidth;
+          gameMessage.textContent = pair.message;
+          gameMessage.classList.add('reveal');
+          openCards = [];
+          boardLocked = false;
+
+          if (matchedPairs === pigPairs.length) {
+            gameComplete.classList.add('show');
+            burstConfetti();
+          }
+        }, 400);
+      } else {
+        setTimeout(() => {
+          first.classList.remove('is-open');
+          second.classList.remove('is-open');
+          first.setAttribute('aria-pressed', 'false');
+          second.setAttribute('aria-pressed', 'false');
+          first.setAttribute('aria-label', 'Carta boca abajo');
+          second.setAttribute('aria-label', 'Carta boca abajo');
+          openCards = [];
+          boardLocked = false;
+        }, 850);
       }
     });
   </script>
