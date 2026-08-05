@@ -308,12 +308,13 @@
 
     .polaroid {
       margin: 0;
-      padding: 7px 7px 26px;
-      background: #fff;
+      padding: 0;
+      background: transparent;
+      border: 0;
       border-radius: 5px;
-      box-shadow: 0 10px 24px rgba(84,40,59,.18);
+      box-shadow: none;
       transform: rotate(var(--tilt));
-      transition: transform .2s ease, box-shadow .2s ease;
+      transition: transform .2s ease;
     }
 
     .polaroid:nth-child(1) { --tilt: -2deg; }
@@ -324,13 +325,92 @@
     .polaroid:hover {
       z-index: 2;
       transform: rotate(0) translateY(-3px) scale(1.02);
-      box-shadow: 0 15px 30px rgba(84,40,59,.22);
+      box-shadow: none;
     }
 
-    .polaroid img {
+    .memory-card {
+      position: relative;
       display: block;
       width: 100%;
-      aspect-ratio: 4 / 5;
+      aspect-ratio: 4 / 6;
+      padding: 0;
+      color: var(--ink);
+      background: transparent;
+      border: 0;
+      border-radius: 5px;
+      box-shadow: 0 10px 24px rgba(84,40,59,.18);
+      perspective: 900px;
+    }
+
+    .memory-card:focus-visible {
+      outline: 3px solid rgba(159,49,93,.4);
+      outline-offset: 5px;
+    }
+
+    .memory-card:hover,
+    .memory-card:active { transform: none; box-shadow: 0 10px 24px rgba(84,40,59,.18); }
+
+    .memory-inner {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      transition: transform .7s cubic-bezier(.2,.75,.2,1);
+    }
+
+    .memory-card.is-flipped .memory-inner { transform: rotateY(180deg); }
+
+    .memory-front,
+    .memory-back {
+      position: absolute;
+      inset: 0;
+      padding: 7px 7px 27px;
+      background: #fff;
+      border-radius: 5px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .memory-front::after {
+      content: "Tócame ♡";
+      position: absolute;
+      right: 0;
+      bottom: 6px;
+      left: 0;
+      color: var(--rose-dark);
+      font-size: .64rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .memory-back {
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      color: var(--rose-dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(.86rem, 3.6vw, 1.05rem);
+      font-style: italic;
+      line-height: 1.45;
+      text-align: center;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.9), transparent 35%),
+        #fde6ef;
+      transform: rotateY(180deg);
+    }
+
+    .memory-back span::after {
+      content: "\A♡";
+      white-space: pre;
+      font-size: 1.4rem;
+      line-height: 1.8;
+    }
+
+    .memory-card img {
+      display: block;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       border-radius: 2px;
     }
@@ -453,10 +533,38 @@
 
       <h2 class="gallery-title">Unos cuantos momentos nuestros ♡</h2>
       <div class="gallery" aria-label="Galería de recuerdos">
-        <figure class="polaroid"><img src="foto-1.jpg" alt="Un recuerdo divertido durante una celebración"></figure>
-        <figure class="polaroid"><img src="foto-2.jpg" alt="Selfie juntos en el coche" loading="lazy"></figure>
-        <figure class="polaroid"><img src="foto-3.jpg" alt="Compartiendo una bebida juntos" loading="lazy"></figure>
-        <figure class="polaroid"><img src="foto-4.jpg" alt="Un momento divertido de compras" loading="lazy"></figure>
+        <figure class="polaroid">
+          <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto de una celebración">
+            <span class="memory-inner">
+              <span class="memory-front"><img src="foto-1.jpg" alt="Un recuerdo divertido durante una celebración"></span>
+              <span class="memory-back"><span>Contigo hasta los planes más improvisados acaban siendo un recuerdo buenísimo.</span></span>
+            </span>
+          </button>
+        </figure>
+        <figure class="polaroid">
+          <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar selfie juntos en el coche">
+            <span class="memory-inner">
+              <span class="memory-front"><img src="foto-2.jpg" alt="Selfie juntos en el coche" loading="lazy"></span>
+              <span class="memory-back"><span>Gracias por hacerme reír incluso cuando la foto sale así de bien.</span></span>
+            </span>
+          </button>
+        </figure>
+        <figure class="polaroid">
+          <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto compartiendo una bebida">
+            <span class="memory-inner">
+              <span class="memory-front"><img src="foto-3.jpg" alt="Compartiendo una bebida juntos" loading="lazy"></span>
+              <span class="memory-back"><span>Compartir contigo siempre sabe mejor.</span></span>
+            </span>
+          </button>
+        </figure>
+        <figure class="polaroid">
+          <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto de un momento de compras">
+            <span class="memory-inner">
+              <span class="memory-front"><img src="foto-4.jpg" alt="Un momento divertido de compras" loading="lazy"></span>
+              <span class="memory-back"><span>No sé qué estábamos buscando, pero contigo cualquier sitio se convierte en aventura.</span></span>
+            </span>
+          </button>
+        </figure>
       </div>
 
       <div class="message">
@@ -475,12 +583,20 @@
     const secret = document.querySelector('#secret');
     const welcome = document.querySelector('#welcome');
     const openEnvelope = document.querySelector('#openEnvelope');
+    const memoryCards = document.querySelectorAll('.memory-card');
     const symbols = ['✨', '🎉', '💖', '🎈', '⭐'];
 
     openEnvelope.addEventListener('click', () => {
       welcome.classList.add('is-open');
       document.body.classList.add('opened');
       setTimeout(() => welcome.setAttribute('aria-hidden', 'true'), 1800);
+    });
+
+    memoryCards.forEach((card) => {
+      card.addEventListener('click', () => {
+        const isFlipped = card.classList.toggle('is-flipped');
+        card.setAttribute('aria-pressed', String(isFlipped));
+      });
     });
 
     button.addEventListener('click', () => {
