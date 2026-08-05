@@ -597,6 +597,143 @@
 
     .game-complete.show { display: block; animation: messageIn .6s ease both; }
 
+    .plan-wheel-section {
+      position: relative;
+      margin-top: 34px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(159,49,93,.13);
+    }
+
+    .plan-wheel-section h2 {
+      margin: 0 0 8px;
+      color: var(--rose-dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.65rem, 7vw, 2.25rem);
+      font-weight: 500;
+      line-height: 1.08;
+    }
+
+    .wheel-intro {
+      max-width: 34ch;
+      margin: 0 auto 22px;
+      font-size: .9rem;
+      line-height: 1.5;
+      opacity: .72;
+    }
+
+    .wheel-wrap {
+      position: relative;
+      width: min(76vw, 310px);
+      margin: 0 auto 20px;
+      filter: drop-shadow(0 18px 25px rgba(101,40,66,.2));
+    }
+
+    .wheel-pointer {
+      position: absolute;
+      z-index: 4;
+      top: -9px;
+      left: 50%;
+      width: 30px;
+      height: 38px;
+      background: var(--rose-dark);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      transform: translateX(-50%);
+      filter: drop-shadow(0 4px 4px rgba(90,36,59,.22));
+    }
+
+    .plan-wheel {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      overflow: hidden;
+      background: conic-gradient(
+        #f8c5d9 0 36deg, #df7da5 36deg 72deg,
+        #ffd6e5 72deg 108deg, #c95d8b 108deg 144deg,
+        #f7b0cd 144deg 180deg, #e792b5 180deg 216deg,
+        #fbd1e1 216deg 252deg, #d86b99 252deg 288deg,
+        #f9bfd5 288deg 324deg, #a93c69 324deg 360deg
+      );
+      border: 8px solid rgba(255,255,255,.88);
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 2px rgba(159,49,93,.1);
+      transition: transform 4.6s cubic-bezier(.12,.72,.12,1);
+    }
+
+    .plan-wheel::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 58px;
+      height: 58px;
+      background: #fff7fb;
+      border: 5px solid var(--rose-dark);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 5px 15px rgba(90,36,59,.2);
+    }
+
+    .wheel-label {
+      position: absolute;
+      z-index: 2;
+      top: 50%;
+      left: 50%;
+      width: 62px;
+      color: #673247;
+      font-size: clamp(.48rem, 2.1vw, .65rem);
+      font-weight: 850;
+      line-height: 1.05;
+      text-align: center;
+      transform: rotate(var(--angle)) translateY(calc(-1 * min(29vw, 116px))) translate(-50%, -50%);
+      transform-origin: 0 0;
+      pointer-events: none;
+    }
+
+    .wheel-label.bonus { color: #fff; font-size: .72rem; }
+
+    .spin-button {
+      min-width: 145px;
+      margin-top: 2px;
+    }
+
+    .spin-button:disabled { cursor: wait; opacity: .68; }
+
+    .plan-result {
+      min-height: 74px;
+      display: grid;
+      place-items: center;
+      margin-top: 18px;
+      padding: 14px 18px;
+      color: var(--rose-dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.08rem;
+      font-style: italic;
+      line-height: 1.4;
+      background: rgba(255,255,255,.58);
+      border: 1px solid rgba(255,255,255,.8);
+      border-radius: 18px;
+    }
+
+    .plan-result.reveal { animation: messageIn .6s ease both; }
+
+    .wheel-lock {
+      position: absolute;
+      z-index: 6;
+      inset: 24px 0 0;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      color: var(--rose-dark);
+      font-weight: 850;
+      line-height: 1.45;
+      background: rgba(255,247,251,.9);
+      border-radius: 22px;
+      backdrop-filter: blur(8px);
+      transition: opacity .5s ease, visibility .5s ease;
+    }
+
+    .plan-wheel-section.unlocked .wheel-lock { opacity: 0; visibility: hidden; pointer-events: none; }
+
     .confetti {
       position: fixed;
       z-index: 10;
@@ -715,6 +852,29 @@
         <div id="gameMessage" class="game-message" aria-live="polite">Toca dos cartas y encuentra una pareja 🐷</div>
         <p id="gameComplete" class="game-complete" aria-live="polite">¡Cadena completa! Y todavía me quedan muchas más cosas por descubrir de ti 💖</p>
       </section>
+
+      <section id="planWheelSection" class="plan-wheel-section" aria-labelledby="wheelTitle">
+        <div class="wheel-lock">🔒 Completa primero la cadena de cerditos para desbloquear la ruleta.</div>
+        <h2 id="wheelTitle">La ruleta de nuestros próximos planes</h2>
+        <p class="wheel-intro">Hazla girar y deja que el azar elija nuestra próxima aventura.</p>
+        <div class="wheel-wrap">
+          <span class="wheel-pointer" aria-hidden="true"></span>
+          <div id="planWheel" class="plan-wheel" aria-label="Ruleta de planes">
+            <span class="wheel-label" style="--angle:18deg">Cena elegida por ti</span>
+            <span class="wheel-label" style="--angle:54deg">Escapada sorpresa</span>
+            <span class="wheel-label" style="--angle:90deg">Restaurante nuevo</span>
+            <span class="wheel-label" style="--angle:126deg">Paseo y helado</span>
+            <span class="wheel-label" style="--angle:162deg">Día sin móviles</span>
+            <span class="wheel-label" style="--angle:198deg">Algo nuevo</span>
+            <span class="wheel-label" style="--angle:234deg">Spa o masajes</span>
+            <span class="wheel-label" style="--angle:270deg">Picnic bonito</span>
+            <span class="wheel-label" style="--angle:306deg">Sesión de fotos</span>
+            <span class="wheel-label bonus" style="--angle:342deg">👉🍑 BONUS</span>
+          </div>
+        </div>
+        <button id="spinWheel" class="spin-button" type="button">Girar la ruleta ✨</button>
+        <div id="planResult" class="plan-result" aria-live="polite">El próximo plan todavía es un misterio…</div>
+      </section>
     </article>
   </main>
 
@@ -727,6 +887,10 @@
     const gameComplete = document.querySelector('#gameComplete');
     const chain = document.querySelector('#chain');
     const chainLinks = [...document.querySelectorAll('.chain-link')];
+    const planWheelSection = document.querySelector('#planWheelSection');
+    const planWheel = document.querySelector('#planWheel');
+    const spinWheel = document.querySelector('#spinWheel');
+    const planResult = document.querySelector('#planResult');
     const symbols = ['✨', '🎉', '💖', '🎈', '⭐'];
 
     const pigPairs = [
@@ -740,9 +904,24 @@
       { icon: '🐷🗺️', message: 'Me gustan los planes que hago junto a ti.' }
     ];
 
+    const plans = [
+      { label: 'Una cena elegida por ti.', weight: 4 },
+      { label: 'Escapada sorpresa.', weight: 1 },
+      { label: 'Probar un restaurante nuevo.', weight: 4 },
+      { label: 'Paseo y helado.', weight: 4 },
+      { label: 'Día sin móviles.', weight: 1 },
+      { label: 'Elegir una actividad que nunca hayamos hecho.', weight: 1 },
+      { label: 'Una tarde de spa o masajes.', weight: 1 },
+      { label: 'Picnic en algún lugar bonito.', weight: 4 },
+      { label: 'Hacer una sesión de fotos.', weight: 1 },
+      { label: '👉🍑 Bonus secreto.', weight: 0 }
+    ];
+
     let openCards = [];
     let matchedPairs = 0;
     let boardLocked = false;
+    let wheelRotation = 0;
+    let wheelSpinning = false;
 
     const shuffledCards = pigPairs
       .flatMap((pair, pairIndex) => [
@@ -821,6 +1000,7 @@
 
           if (matchedPairs === pigPairs.length) {
             gameComplete.classList.add('show');
+            planWheelSection.classList.add('unlocked');
             burstConfetti();
           }
         }, 400);
@@ -836,6 +1016,41 @@
           boardLocked = false;
         }, 850);
       }
+    });
+
+    spinWheel.addEventListener('click', () => {
+      if (wheelSpinning || !planWheelSection.classList.contains('unlocked')) return;
+      wheelSpinning = true;
+      spinWheel.disabled = true;
+      planResult.textContent = 'Girando…';
+      planResult.classList.remove('reveal');
+
+      const selectable = plans.filter((plan) => plan.weight > 0);
+      const totalWeight = selectable.reduce((sum, plan) => sum + plan.weight, 0);
+      let ticket = Math.random() * totalWeight;
+      let selected = selectable[0];
+      for (const plan of selectable) {
+        ticket -= plan.weight;
+        if (ticket < 0) {
+          selected = plan;
+          break;
+        }
+      }
+
+      const selectedIndex = plans.indexOf(selected);
+      const segmentCenter = selectedIndex * 36 + 18;
+      const normalized = ((wheelRotation % 360) + 360) % 360;
+      const target = 360 - segmentCenter;
+      const extra = ((target - normalized + 360) % 360) + 360 * 6;
+      wheelRotation += extra;
+      planWheel.style.transform = `rotate(${wheelRotation}deg)`;
+
+      setTimeout(() => {
+        planResult.textContent = `Nuestro próximo plan: ${selected.label}`;
+        planResult.classList.add('reveal');
+        spinWheel.disabled = false;
+        wheelSpinning = false;
+      }, 4700);
     });
   </script>
 </body>
