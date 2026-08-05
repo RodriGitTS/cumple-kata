@@ -418,6 +418,27 @@
     .polaroid:nth-child(2) img,
     .polaroid:nth-child(3) img { object-position: center; }
 
+    .second-gallery-section {
+      display: none;
+      margin-top: 30px;
+      animation: riseIn .7s ease both;
+    }
+
+    .second-gallery-section.show { display: block; }
+    .second-gallery-section .gallery-title { margin-bottom: 6px; }
+
+    .second-gallery-intro {
+      margin: 0 auto 18px;
+      color: var(--rose-dark);
+      font-size: .93rem;
+      line-height: 1.5;
+      opacity: .78;
+    }
+
+    .second-gallery-section .polaroid:nth-child(1) img,
+    .second-gallery-section .polaroid:nth-child(3) img,
+    .second-gallery-section .polaroid:nth-child(4) img { object-position: center top; }
+
     .message {
       margin: 0 0 24px;
       padding: 20px;
@@ -1196,6 +1217,45 @@
         <div id="planResult" class="plan-result" aria-live="polite">El próximo plan todavía es un misterio…</div>
       </section>
 
+      <section id="secondGallerySection" class="second-gallery-section" aria-labelledby="secondGalleryTitle">
+        <h2 id="secondGalleryTitle" class="gallery-title">Otros cuatro momentos que no podían faltar ♡</h2>
+        <p class="second-gallery-intro">Toca cada foto para descubrir lo que guarda.</p>
+        <div class="gallery" aria-label="Segunda galería de recuerdos">
+          <figure class="polaroid">
+            <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto cuidándome">
+              <span class="memory-inner">
+                <span class="memory-front"><img src="recuerdo-cuidandome.jpg" alt="Cuidándome con mucha concentración" loading="lazy"></span>
+                <span class="memory-back"><span>Incluso en los momentos pequeños, siempre encuentras una forma de cuidarme.</span></span>
+              </span>
+            </button>
+          </figure>
+          <figure class="polaroid">
+            <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto conduciendo">
+              <span class="memory-inner">
+                <span class="memory-front"><img src="recuerdo-conduciendo.jpg" alt="Conduciendo durante una aventura juntos" loading="lazy"></span>
+                <span class="memory-back"><span>Mi conductora favorita para todas las aventuras que todavía nos quedan.</span></span>
+              </span>
+            </button>
+          </figure>
+          <figure class="polaroid">
+            <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto comiendo una hamburguesa en Budapest">
+              <span class="memory-inner">
+                <span class="memory-front"><img src="recuerdo-hamburguesa.jpg" alt="Comiendo una hamburguesa en Budapest" loading="lazy"></span>
+                <span class="memory-back"><span>Budapest, una hamburguesa y esa cara: un recuerdo imposible de superar.</span></span>
+              </span>
+            </button>
+          </figure>
+          <figure class="polaroid">
+            <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto de la princesa delante del castillo">
+              <span class="memory-inner">
+                <span class="memory-front"><img src="recuerdo-princesa.jpg" alt="Mi princesa delante de un castillo" loading="lazy"></span>
+                <span class="memory-back"><span>La princesa delante de su castillo, como tenía que ser.</span></span>
+              </span>
+            </button>
+          </figure>
+        </div>
+      </section>
+
       <section id="questionsChapter" class="questions-chapter" aria-labelledby="questionsTitle">
         <span class="chapter-number">Siguiente capítulo</span>
         <h2 id="questionsTitle">¿Cuánto recuerdas?</h2>
@@ -1279,6 +1339,7 @@
     const planWheel = document.querySelector('#planWheel');
     const spinWheel = document.querySelector('#spinWheel');
     const planResult = document.querySelector('#planResult');
+    const secondGallerySection = document.querySelector('#secondGallerySection');
     const questionsChapter = document.querySelector('#questionsChapter');
     const quizGame = document.querySelector('#quizGame');
     const quizProgress = document.querySelector('#quizProgress');
@@ -1500,8 +1561,9 @@
         spinWheel.textContent = 'Plan elegido ✓';
         spinWheel.classList.add('used');
         wheelSpinning = false;
+        secondGallerySection.classList.add('show');
         questionsChapter.classList.add('show');
-        setTimeout(() => questionsChapter.scrollIntoView({ behavior: 'smooth', block: 'center' }), 700);
+        setTimeout(() => secondGallerySection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 700);
       }, 4700);
     });
 
