@@ -773,6 +773,73 @@
 
     .questions-chapter p { margin: 0; line-height: 1.55; }
 
+    .quiz-progress {
+      margin: 18px 0 10px;
+      font-size: .75rem;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .quiz-photo {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      margin: 0 0 18px;
+      object-fit: cover;
+      border: 6px solid rgba(255,255,255,.82);
+      border-radius: 18px;
+      box-shadow: 0 12px 28px rgba(93,40,63,.16);
+    }
+
+    .quiz-question {
+      margin: 0 0 15px !important;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.22rem;
+      font-weight: 700;
+      line-height: 1.3 !important;
+    }
+
+    .quiz-options { display: grid; gap: 9px; }
+
+    .quiz-option {
+      width: 100%;
+      min-height: 46px;
+      padding: 11px 14px;
+      color: var(--rose-dark);
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(159,49,93,.14);
+      border-radius: 13px;
+      box-shadow: none;
+      font-size: .92rem;
+      text-align: left;
+    }
+
+    .quiz-option:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(93,40,63,.1); }
+    .quiz-option.correct { color: #275d42; background: #dff3e8; border-color: #75b593; }
+    .quiz-option.wrong { color: #7b3044; background: #f9dce3; border-color: #d9859a; }
+    .quiz-option:disabled { cursor: default; opacity: 1; }
+
+    .quiz-feedback {
+      min-height: 48px;
+      display: grid;
+      place-items: center;
+      margin-top: 13px !important;
+      font-weight: 800;
+    }
+
+    .quiz-next { display: none; margin-top: 5px; }
+    .quiz-next.show { display: inline-block; animation: messageIn .4s ease both; }
+
+    .quiz-finish {
+      display: none;
+      padding: 24px 8px 4px;
+    }
+
+    .quiz-finish.show { display: block; animation: messageIn .6s ease both; }
+    .quiz-finish .score { display: block; margin: 8px 0; font-family: Georgia, "Times New Roman", serif; font-size: 2.4rem; }
+
     .confetti {
       position: fixed;
       z-index: 10;
@@ -917,8 +984,21 @@
 
       <section id="questionsChapter" class="questions-chapter" aria-labelledby="questionsTitle">
         <span class="chapter-number">Siguiente capítulo</span>
-        <h2 id="questionsTitle">Ahora vienen las preguntas…</h2>
-        <p>Prepárate para demostrar cuánto recuerdas de nosotros 💭</p>
+        <h2 id="questionsTitle">¿Cuánto recuerdas?</h2>
+        <p>Prepárate para demostrar cuánto recuerdas de nuestras aventuras 💭</p>
+        <div id="quizGame">
+          <div id="quizProgress" class="quiz-progress">Pregunta 1 de 5</div>
+          <img id="quizPhoto" class="quiz-photo" src="quiz-1.jpg" alt="Imagen de la primera pregunta" loading="lazy">
+          <p id="quizQuestion" class="quiz-question"></p>
+          <div id="quizOptions" class="quiz-options"></div>
+          <p id="quizFeedback" class="quiz-feedback" aria-live="polite"></p>
+          <button id="quizNext" class="quiz-next" type="button">Siguiente pregunta →</button>
+        </div>
+        <div id="quizFinish" class="quiz-finish" aria-live="polite">
+          <div>Resultado final</div>
+          <strong id="quizScore" class="score">0 / 5</strong>
+          <p id="quizFinalMessage">Has llegado hasta el final del interrogatorio 🎉</p>
+        </div>
       </section>
     </article>
   </main>
@@ -937,6 +1017,15 @@
     const spinWheel = document.querySelector('#spinWheel');
     const planResult = document.querySelector('#planResult');
     const questionsChapter = document.querySelector('#questionsChapter');
+    const quizGame = document.querySelector('#quizGame');
+    const quizProgress = document.querySelector('#quizProgress');
+    const quizPhoto = document.querySelector('#quizPhoto');
+    const quizQuestion = document.querySelector('#quizQuestion');
+    const quizOptions = document.querySelector('#quizOptions');
+    const quizFeedback = document.querySelector('#quizFeedback');
+    const quizNext = document.querySelector('#quizNext');
+    const quizFinish = document.querySelector('#quizFinish');
+    const quizScore = document.querySelector('#quizScore');
     const symbols = ['✨', '🎉', '💖', '🎈', '⭐'];
 
     const pigPairs = [
@@ -963,12 +1052,53 @@
       { label: '👉🍑 Bonus secreto.', weight: 0 }
     ];
 
+    const quizQuestions = [
+      {
+        question: '¿Qué día nos fuimos a Zaragoza?',
+        image: 'quiz-1.jpg',
+        alt: 'Recuerdo del viaje a Zaragoza',
+        options: ['12 de septiembre', '6 de septiembre', '8 de septiembre'],
+        correct: 2
+      },
+      {
+        question: '¿Dónde estoy?',
+        image: 'quiz-2.jpg',
+        alt: 'Foto en una ciudad durante un viaje',
+        options: ['Bratislava', 'Košice', 'Ucrania'],
+        correct: 1
+      },
+      {
+        question: '¿Qué demonio apareció este día?',
+        image: 'quiz-3.jpg',
+        alt: 'Foto frente a un espejo redondo',
+        options: ['Breathebub', 'Gasmodeus', 'Cacanás'],
+        correct: 2
+      },
+      {
+        question: '¿Dónde estabas durmiendo?',
+        image: 'quiz-4.jpg',
+        alt: 'Durmiendo durante un viaje en tren',
+        options: ['Valencia', 'Zaragoza', 'Budapest'],
+        correct: 1
+      },
+      {
+        question: '¿Cuál fue nuestra primera canción icónica?',
+        image: 'quiz-5.jpg',
+        alt: 'Recuerdo relacionado con nuestra primera canción icónica',
+        options: ['1000 Blunts', 'Money', 'Greenlight'],
+        correct: 0
+      }
+    ];
+
     let openCards = [];
     let matchedPairs = 0;
     let boardLocked = false;
     let wheelRotation = 0;
     let wheelSpinning = false;
     let wheelUsed = false;
+    let currentQuestion = 0;
+    let quizPoints = 0;
+    let questionAnswered = false;
 
     const shuffledCards = pigPairs
       .flatMap((pair, pairIndex) => [
@@ -1103,6 +1233,68 @@
         setTimeout(() => questionsChapter.scrollIntoView({ behavior: 'smooth', block: 'center' }), 700);
       }, 4700);
     });
+
+    const renderQuestion = () => {
+      const item = quizQuestions[currentQuestion];
+      questionAnswered = false;
+      quizProgress.textContent = `Pregunta ${currentQuestion + 1} de ${quizQuestions.length}`;
+      quizPhoto.src = item.image;
+      quizPhoto.alt = item.alt;
+      quizQuestion.textContent = item.question;
+      quizFeedback.textContent = '';
+      quizNext.classList.remove('show');
+      quizOptions.replaceChildren();
+
+      item.options.forEach((option, index) => {
+        const answer = document.createElement('button');
+        answer.type = 'button';
+        answer.className = 'quiz-option';
+        answer.textContent = option;
+        answer.dataset.index = index;
+        quizOptions.appendChild(answer);
+      });
+    };
+
+    quizOptions.addEventListener('click', (event) => {
+      const answer = event.target.closest('.quiz-option');
+      if (!answer || questionAnswered) return;
+      questionAnswered = true;
+      const selected = Number(answer.dataset.index);
+      const item = quizQuestions[currentQuestion];
+      const answerButtons = [...quizOptions.querySelectorAll('.quiz-option')];
+
+      answerButtons.forEach((button, index) => {
+        button.disabled = true;
+        if (index === item.correct) button.classList.add('correct');
+      });
+
+      if (selected === item.correct) {
+        quizPoints += 1;
+        quizFeedback.textContent = '¡Correcto! Muy bien recordado ✨';
+      } else {
+        answer.classList.add('wrong');
+        quizFeedback.textContent = `Casi… La respuesta correcta era: ${item.options[item.correct]}.`;
+      }
+
+      quizNext.textContent = currentQuestion === quizQuestions.length - 1 ? 'Ver resultado →' : 'Siguiente pregunta →';
+      quizNext.classList.add('show');
+    });
+
+    quizNext.addEventListener('click', () => {
+      currentQuestion += 1;
+      if (currentQuestion < quizQuestions.length) {
+        renderQuestion();
+        questionsChapter.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+
+      quizGame.style.display = 'none';
+      quizScore.textContent = `${quizPoints} / ${quizQuestions.length}`;
+      quizFinish.classList.add('show');
+      burstConfetti();
+    });
+
+    renderQuestion();
   </script>
 </body>
 </html>
