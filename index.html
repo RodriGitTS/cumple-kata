@@ -117,33 +117,53 @@
       opacity: .82;
     }
 
-    .photo {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 10;
-      margin: 0 auto 22px;
-      overflow: hidden;
-      background:
-        linear-gradient(135deg, rgba(216,95,143,.12), rgba(255,255,255,.18)),
-        url("https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=1000&q=85") center/cover;
-      border: 6px solid rgba(255,255,255,.74);
-      border-radius: 24px;
-      box-shadow: 0 15px 35px rgba(105,43,70,.14);
+    .gallery-title {
+      margin: 2px 0 14px;
+      color: var(--rose-dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.35rem;
+      font-style: italic;
+      font-weight: 500;
     }
 
-    .photo::after {
-      content: "Un día para celebrar ✦";
-      position: absolute;
-      right: 12px;
-      bottom: 12px;
-      padding: 7px 10px;
-      color: #fff;
-      font-size: .72rem;
-      font-weight: 700;
-      background: rgba(91,43,63,.55);
-      border-radius: 999px;
-      backdrop-filter: blur(8px);
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 0 0 24px;
     }
+
+    .polaroid {
+      margin: 0;
+      padding: 7px 7px 26px;
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 0 10px 24px rgba(84,40,59,.18);
+      transform: rotate(var(--tilt));
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .polaroid:nth-child(1) { --tilt: -2deg; }
+    .polaroid:nth-child(2) { --tilt: 2deg; }
+    .polaroid:nth-child(3) { --tilt: 1.5deg; }
+    .polaroid:nth-child(4) { --tilt: -1.5deg; }
+
+    .polaroid:hover {
+      z-index: 2;
+      transform: rotate(0) translateY(-3px) scale(1.02);
+      box-shadow: 0 15px 30px rgba(84,40,59,.22);
+    }
+
+    .polaroid img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border-radius: 2px;
+    }
+
+    .polaroid:nth-child(2) img,
+    .polaroid:nth-child(3) img { object-position: center; }
 
     .message {
       margin: 0 0 24px;
@@ -240,7 +260,13 @@
       <h1>Feliz <span>cumpleaños</span></h1>
       <p class="subtitle">Hoy quería regalarte algo pequeño, pero hecho especialmente para ti.</p>
 
-      <div class="photo" role="img" aria-label="Globos y confeti de celebración"></div>
+      <h2 class="gallery-title">Unos cuantos momentos nuestros ♡</h2>
+      <div class="gallery" aria-label="Galería de recuerdos">
+        <figure class="polaroid"><img src="foto-1.jpg" alt="Un recuerdo divertido durante una celebración"></figure>
+        <figure class="polaroid"><img src="foto-2.jpg" alt="Selfie juntos en el coche" loading="lazy"></figure>
+        <figure class="polaroid"><img src="foto-3.jpg" alt="Compartiendo una bebida juntos" loading="lazy"></figure>
+        <figure class="polaroid"><img src="foto-4.jpg" alt="Un momento divertido de compras" loading="lazy"></figure>
+      </div>
 
       <div class="message">
         <p>Gracias por estar ahí, por todas las conversaciones, las risas y los recuerdos que hemos compartido.</p>
