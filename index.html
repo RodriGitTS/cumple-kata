@@ -439,6 +439,9 @@
     .second-gallery-section .polaroid:nth-child(3) img,
     .second-gallery-section .polaroid:nth-child(4) img { object-position: center top; }
 
+    .pig-gallery-section { margin-top: 26px; }
+    .pig-gallery-section .polaroid img { object-position: center top; }
+
     .message {
       margin: 0 0 24px;
       padding: 20px;
@@ -1194,6 +1197,45 @@
         <p id="gameComplete" class="game-complete" aria-live="polite">¡Cadena completa! Y todavía me quedan muchas más cosas por descubrir de ti 💖</p>
       </section>
 
+      <section id="pigGallerySection" class="second-gallery-section pig-gallery-section" aria-labelledby="pigGalleryTitle">
+        <h2 id="pigGalleryTitle" class="gallery-title">Más recuerdos nuestros ♡</h2>
+        <p class="second-gallery-intro">Toca cada foto para descubrir lo que guarda.</p>
+        <div class="gallery" aria-label="Galería de recuerdos después del juego de cerditos">
+          <figure class="polaroid">
+            <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto juntos en IKEA">
+              <span class="memory-inner">
+                <span class="memory-front"><img src="recuerdo-ikea.jpg" alt="Una foto juntos en IKEA" loading="lazy"></span>
+                <span class="memory-back"><span>Probando cómo nos quedaría una cocina juntos.</span></span>
+              </span>
+            </button>
+          </figure>
+          <figure class="polaroid">
+            <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto juntos de fiesta">
+              <span class="memory-inner">
+                <span class="memory-front"><img src="recuerdo-fiesta.jpg" alt="Una noche de fiesta juntos" loading="lazy"></span>
+                <span class="memory-back"><span>Una noche de fiesta y otra foto en la que se nota lo bien que lo pasamos.</span></span>
+              </span>
+            </button>
+          </figure>
+          <figure class="polaroid">
+            <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto de nuestro viaje a Londres">
+              <span class="memory-inner">
+                <span class="memory-front"><img src="recuerdo-londres.jpg" alt="Los dos delante del Big Ben en Londres" loading="lazy"></span>
+                <span class="memory-back"><span>Londres contigo: otro lugar que ya forma parte de nuestra historia.</span></span>
+              </span>
+            </button>
+          </figure>
+          <figure class="polaroid">
+            <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto de un momento en casa">
+              <span class="memory-inner">
+                <span class="memory-front"><img src="recuerdo-hogar.jpg" alt="Un momento tranquilo en casa" loading="lazy"></span>
+                <span class="memory-back"><span>Porque contigo hasta un momento cualquiera puede sentirse como hogar.</span></span>
+              </span>
+            </button>
+          </figure>
+        </div>
+      </section>
+
       <section id="planWheelSection" class="plan-wheel-section" aria-labelledby="wheelTitle">
         <div class="wheel-lock">🔒 Completa primero la cadena de cerditos para desbloquear la ruleta.</div>
         <h2 id="wheelTitle">La ruleta de nuestros próximos planes</h2>
@@ -1333,6 +1375,7 @@
     const pigBoard = document.querySelector('#pigBoard');
     const gameMessage = document.querySelector('#gameMessage');
     const gameComplete = document.querySelector('#gameComplete');
+    const pigGallerySection = document.querySelector('#pigGallerySection');
     const chain = document.querySelector('#chain');
     const chainLinks = [...document.querySelectorAll('.chain-link')];
     const planWheelSection = document.querySelector('#planWheelSection');
@@ -1509,8 +1552,10 @@
 
           if (matchedPairs === pigPairs.length) {
             gameComplete.classList.add('show');
+            pigGallerySection.classList.add('show');
             planWheelSection.classList.add('unlocked');
             burstConfetti();
+            setTimeout(() => pigGallerySection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 700);
           }
         }, 400);
       } else {
