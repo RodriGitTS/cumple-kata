@@ -1298,6 +1298,45 @@
         </div>
       </section>
 
+      <section id="wheelGallerySection" class="second-gallery-section" aria-labelledby="wheelGalleryTitle">
+        <h2 id="wheelGalleryTitle" class="gallery-title">Y todavía quedan más recuerdos ♡</h2>
+        <p class="second-gallery-intro">Toca cada foto para descubrir lo que guarda.</p>
+        <div class="gallery" aria-label="Otra galería de recuerdos después de la ruleta">
+          <figure class="polaroid">
+            <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto comprando electrodomésticos">
+              <span class="memory-inner">
+                <span class="memory-front"><img src="recuerdo-105gramos.jpg" alt="Los dos comprando electrodomésticos" loading="lazy"></span>
+                <span class="memory-back"><span>Otra compra juntos y otra historia que guardar.</span></span>
+              </span>
+            </button>
+          </figure>
+          <figure class="polaroid">
+            <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto juntos en Eslovaquia">
+              <span class="memory-inner">
+                <span class="memory-front"><img src="recuerdo-eslovaquia.jpg" alt="Los dos durante un viaje por Eslovaquia" loading="lazy"></span>
+                <span class="memory-back"><span>Eslovaquia contigo, uno de esos viajes que siempre recordaré.</span></span>
+              </span>
+            </button>
+          </figure>
+          <figure class="polaroid">
+            <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto pidiendo patatas">
+              <span class="memory-inner">
+                <span class="memory-front"><img src="recuerdo-patatas.jpg" alt="Un momento divertido pidiendo patatas desde el sofá" loading="lazy"></span>
+                <span class="memory-back"><span>La mirada oficial para pedirme patatas sin decir una palabra.</span></span>
+              </span>
+            </button>
+          </figure>
+          <figure class="polaroid">
+            <button class="memory-card" type="button" aria-pressed="false" aria-label="Girar foto juntos en Lastras">
+              <span class="memory-inner">
+                <span class="memory-front"><img src="recuerdo-lastras.jpg" alt="Un recuerdo divertido juntos en Lastras" loading="lazy"></span>
+                <span class="memory-back"><span>Lastras, naturaleza y nosotros haciendo el tonto como siempre.</span></span>
+              </span>
+            </button>
+          </figure>
+        </div>
+      </section>
+
       <section id="questionsChapter" class="questions-chapter" aria-labelledby="questionsTitle">
         <span class="chapter-number">Siguiente capítulo</span>
         <h2 id="questionsTitle">¿Cuánto recuerdas?</h2>
@@ -1383,6 +1422,7 @@
     const spinWheel = document.querySelector('#spinWheel');
     const planResult = document.querySelector('#planResult');
     const secondGallerySection = document.querySelector('#secondGallerySection');
+    const wheelGallerySection = document.querySelector('#wheelGallerySection');
     const questionsChapter = document.querySelector('#questionsChapter');
     const quizGame = document.querySelector('#quizGame');
     const quizProgress = document.querySelector('#quizProgress');
@@ -1607,6 +1647,7 @@
         spinWheel.classList.add('used');
         wheelSpinning = false;
         secondGallerySection.classList.add('show');
+        wheelGallerySection.classList.add('show');
         questionsChapter.classList.add('show');
         setTimeout(() => secondGallerySection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 700);
       }, 4700);
